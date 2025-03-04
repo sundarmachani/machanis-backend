@@ -13,7 +13,11 @@ import userRoutes from './routes/users.js';
 config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://machanis-frontend.vercel.app',
+    methods: 'GET, POST, PUT, DELETE',
+    credentials: true
+}));
 app.use(json());
 
 const connectDB = async () => {
