@@ -13,12 +13,24 @@ import userRoutes from './routes/users.js';
 config();
 
 const app = express();
+
+const allowedOrigins = ["http://localhost:5173", "https://machanis.vercel.app"];
+
 app.use(cors({
-    origin: 'https://machanis.vercel.app',
-    methods: 'GET, POST, PUT, DELETE',
-    credentials: true
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    credentials: true, // Allow cookies and authentication headers
 }));
-app.use(json());
+
+app.options("*", cors());
+
+app.use(express.json());
 
 const connectDB = async () => {
     try {
