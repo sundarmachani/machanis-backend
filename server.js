@@ -14,7 +14,7 @@ config();
 
 const app = express();
 app.use(cors({
-    origin: 'https://machanis-frontend.vercel.app',
+    origin: 'https://machanis.vercel.app',
     methods: 'GET, POST, PUT, DELETE',
     credentials: true
 }));
