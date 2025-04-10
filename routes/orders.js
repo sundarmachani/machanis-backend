@@ -1,5 +1,5 @@
 import express from 'express';
-import Order from '../models/Order.js';``
+import Order from '../models/Order.js'; ``
 import { authMiddleware, adminMiddleware } from '../middleware/authMiddleware.js';
 import Product from '../models/Product.js';
 
@@ -28,7 +28,7 @@ router.post('/', authMiddleware, async (req, res) => {
     try {
         const { items, totalAmount } = req.body;
         console.log(req.body);
-        
+
         if (!items || items.length === 0) {
             return res.status(400).json({ message: "Order must contain items" });
         }
@@ -37,13 +37,13 @@ router.post('/', authMiddleware, async (req, res) => {
         for (const item of items) {
             const product = await Product.findById(item.productId);
             if (product) {
-              if (product.stock < item.quantity) {
-                return res.status(400).json({ message: `Not enough stock for ${product.name}` });
-              }
-              product.stock -= item.quantity;
-              await product.save();
+                if (product.stock < item.quantity) {
+                    return res.status(400).json({ message: `Not enough stock for ${product.name}` });
+                }
+                product.stock -= item.quantity;
+                await product.save();
             }
-          }
+        }
 
         // Create order
         const newOrder = new Order({

@@ -9,12 +9,33 @@ import orderRoutes from './routes/orders.js';
 import stripeRoutes from './routes/stripe.js';
 import uploadRoutes from './routes/upload.js'
 import userRoutes from './routes/users.js';
+import client from 'prom-client';
 
 config();
 
 const app = express();
+const collectDefaultMetrics = client.collectDefaultMetrics;
 
+collectDefaultMetrics({ timeout: 5000 });
 const allowedOrigins = ["http://localhost:5173", "https://machanis.vercel.app"];
+
+const httpRequestCounter = new client.Counter({
+    name: 'http_requests_total',
+    help: 'Total number of HTTP requests',
+    labelNames: ['method', 'route', 'statusCode'],
+});
+
+app.use((req, res, next) => {
+    res.on('finish', () => {
+        httpRequestCounter.labels(req.method, req.path, res.statusCode).inc();
+    });
+    next();
+});
+
+app.get('/metrics', async (req, res) => {
+    res.set('Content-Type', client.register.contentType);
+    res.end(await client.register.metrics());
+});
 
 app.use(cors({
     origin: function (origin, callback) {

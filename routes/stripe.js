@@ -23,7 +23,7 @@ router.post("/", async (req, res) => {
 
     for (const item of items) {
       const product = await Product.findById(item.productId);
-      
+
       if (!product) {
         console.error(`Product not found: ${item.productId}`);
         return res.status(400).json({ error: `Product not found: ${item.productId}` });

@@ -18,7 +18,7 @@ router.get("/", authMiddleware, async (req, res) => {
 });
 
 // Get logged-in user profile
-router.get("/:userId", authMiddleware, async (req, res) => {  
+router.get("/:userId", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.params.userId).select("-password");
     if (!user) {
